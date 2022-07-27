@@ -33,7 +33,7 @@ function AppProvider({ children }: { children: ReactNode }) {
     getHomePageData();
     getAboutPageData();
     if (localStorage.getItem("user")) {
-      setUser(JSON.parse(localStorage.getItem("user")));
+      setUser(JSON.parse(localStorage.getItem("user") || ""));
     }
   }, []);
 

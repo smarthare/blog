@@ -5,23 +5,37 @@ import {
   useCallback,
   useEffect,
 } from "react";
+import { useRouter } from "next/router";
 
-import { getPages, getPosts, getUsers } from "apis";
+import { getPages, getPosts, getUsers, validate } from "apis";
+import { IAppContext } from "types/context";
 import { AuthorsType, AuthorType } from "types/author";
 import { PostsType, PostType } from "types/post";
 import { PagesType } from "types/page";
+import { UserType } from "types/user.t";
 
 const AppContext = createContext({
   posts: [],
   pages: [],
-} as {
-  posts: PostsType;
-  pages: PagesType;
-});
+  user: undefined,
+  signUser: () => {},
+  signOut: () => {},
+} as IAppContext);
 
 function AppProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
+
   const [posts, setPosts] = useState<PostsType>([]);
   const [pages, setPages] = useState<PagesType>([]);
+  const [user, setUser] = useState<UserType>();
+
+  useEffect(() => {
+    getHomePageData();
+    getAboutPageData();
+    if (localStorage.getItem("user")) {
+      setUser(JSON.parse(localStorage.getItem("user")));
+    }
+  }, []);
 
   const findAuthorName = (_authors: AuthorsType, id: number) => {
     const author = _authors.find((author: AuthorType) => author.id === id);
@@ -50,16 +64,28 @@ function AppProvider({ children }: { children: ReactNode }) {
     setPages(newPages as PagesType);
   }, [pages]);
 
-  useEffect(() => {
-    getHomePageData();
-    getAboutPageData();
-  }, []);
+  const signUser = (userdata: UserType) => {
+    setUser(userdata);
+    localStorage.setItem("token", userdata.token);
+    localStorage.setItem("user", JSON.stringify(userdata));
+    router.push("/");
+  };
+
+  const signOut = () => {
+    setUser(undefined);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/");
+  };
 
   return (
     <AppContext.Provider
       value={{
         posts,
         pages,
+        user,
+        signUser,
+        signOut,
       }}
     >
       {children}

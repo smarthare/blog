@@ -1,5 +1,8 @@
+import { useContext } from "react";
 import Link from "next/link";
 import Head from "next/head";
+
+import { AppContext } from "@contexts/AppContext";
 
 export default function Layout({
   children,
@@ -8,6 +11,8 @@ export default function Layout({
   children: React.ReactNode;
   title?: string;
 }) {
+  const { signOut } = useContext(AppContext);
+
   return (
     <div>
       <Head>
@@ -65,7 +70,9 @@ export default function Layout({
             </li>
 
             <li className="logged-in menu-item menu-item-type-custom menu-item-object-custom menu-item-1915">
-              <a href="#">Logout</a>
+              <a href="#" onClick={signOut}>
+                Logout
+              </a>
             </li>
           </ul>
         </nav>

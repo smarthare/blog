@@ -7,10 +7,11 @@ import { AppContext } from "@contexts/AppContext";
 import { PostType } from "types/post";
 
 const Home: NextPage = () => {
-  const { posts } = useContext(AppContext);
+  const { posts, user } = useContext(AppContext);
 
   return (
     <Layout>
+      {user && `Welcome ${user.user_display_name}!`}
       <div itemScope itemType="https://schema.org/Blog">
         {posts.map((post: PostType) => (
           <Article post={post} key={`10up-post-${post.id}-${post.date}`} />

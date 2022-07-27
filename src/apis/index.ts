@@ -6,16 +6,6 @@ import { PostsType } from "types/post";
 
 const API = axios.create({ baseURL: process.env.TENUP_URL });
 
-API.interceptors.request.use((req) => {
-  if (localStorage) {
-    const token = localStorage.getItem("token");
-    if (req.headers !== undefined && token) {
-      req.headers.Authentication = `Bearer ${token}`;
-    }
-  }
-  return req;
-});
-
 export const getPosts = () =>
   API.get("/wp/v2/posts")
     .then((receipt) => receipt.data as PostsType)
@@ -37,6 +27,18 @@ export const login = (username: string, password: any) =>
     .catch(console.error);
 
 export const validate = () =>
-  API.post("/jwt-auth/v1/token/validate")
+  API.post(
+    "/jwt-auth/v1/token/validate",
+    {},
+    {
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control",
+        Authentication: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  )
     .then((receipt) => receipt.data)
     .catch(console.error);

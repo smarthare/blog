@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { PostType } from "types/post";
 
 import styles from "@styles/article.module.css";
+import { validate } from "apis";
 
 const Article = ({ post }: { post: PostType }) => {
+
+  useEffect(() => {
+    validate();
+  }, [])
   return (
     <article
       itemScope

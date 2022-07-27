@@ -1,7 +1,11 @@
+import React, { useContext, useEffect, useState } from "react";
+
 import { login } from "apis";
-import React, { useEffect, useState } from "react";
+import { AppContext } from "@contexts/AppContext";
 
 const LoginForm = () => {
+  const { signUser } = useContext(AppContext);
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<any>("");
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
@@ -18,9 +22,13 @@ const LoginForm = () => {
     setPassword(e.currentTarget.value);
   };
 
-  const submit = () => {
-    
-  }
+  const submit = async () => {
+    const userdata = await login(username, password);
+    console.log(userdata)
+    signUser(userdata);
+    setUsername("");
+    setPassword("");
+  };
 
   return (
     <form className="login">
@@ -32,7 +40,7 @@ const LoginForm = () => {
         Password{" "}
         <input type="password" onChange={handlePassword} value={password} />
       </div>
-      <button type="submit" disabled={!canSubmit} onClick={submit}>
+      <button type="button" disabled={!canSubmit} onClick={submit}>
         Submit
       </button>
     </form>

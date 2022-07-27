@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import { AuthorsType } from "types/author";
 import { PagesType } from "types/page";
@@ -6,25 +6,30 @@ import { PostsType } from "types/post";
 
 const API = axios.create({ baseURL: process.env.TENUP_URL });
 
+const handleError = (error: AxiosError) => {
+  console.log(error.message);
+  logout();
+};
+
 export const getPosts = () =>
   API.get("/wp/v2/posts")
     .then((receipt) => receipt.data as PostsType)
-    .catch(console.error);
+    .catch(handleError);
 
 export const getPages = () =>
   API.get("/wp/v2/pages")
     .then((receipt) => receipt.data as PagesType)
-    .catch(console.error);
+    .catch(handleError);
 
 export const getUsers = () =>
   API.get(`/wp/v2/users`)
     .then((receipt) => receipt.data as AuthorsType)
-    .catch(console.error);
+    .catch(handleError);
 
 export const login = (username: string, password: any) =>
   API.post(`/jwt-auth/v1/token`, { username, password })
     .then((receipt) => receipt.data)
-    .catch(console.error);
+    .catch(handleError);
 
 export const logout = () => {
   localStorage.removeItem("token");
@@ -46,7 +51,4 @@ export const validate = () =>
     }
   )
     .then((receipt) => receipt.data)
-    .catch((error) => {
-      console.log(error);
-      logout();
-    });
+    .catch(handleError);

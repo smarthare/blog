@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useRouter } from "next/router";
 
-import { getPages, getPosts, getUsers, validate } from "apis";
+import { getPages, getPosts, getUsers, logout, validate } from "apis";
 import { IAppContext } from "types/context";
 import { AuthorsType, AuthorType } from "types/author";
 import { PostsType, PostType } from "types/post";
@@ -73,8 +73,7 @@ function AppProvider({ children }: { children: ReactNode }) {
 
   const signOut = () => {
     setUser(undefined);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    logout();
     router.push("/");
   };
 

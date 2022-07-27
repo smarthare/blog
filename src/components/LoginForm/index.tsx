@@ -24,7 +24,7 @@ const LoginForm = () => {
 
   const submit = async () => {
     const userdata = await login(username, password);
-    console.log(userdata)
+
     signUser(userdata);
     setUsername("");
     setPassword("");

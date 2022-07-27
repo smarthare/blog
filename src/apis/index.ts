@@ -26,6 +26,11 @@ export const login = (username: string, password: any) =>
     .then((receipt) => receipt.data)
     .catch(console.error);
 
+export const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+};
+
 export const validate = () =>
   API.post(
     "/jwt-auth/v1/token/validate",
@@ -41,4 +46,7 @@ export const validate = () =>
     }
   )
     .then((receipt) => receipt.data)
-    .catch(console.error);
+    .catch((error) => {
+      console.log(error);
+      logout();
+    });
